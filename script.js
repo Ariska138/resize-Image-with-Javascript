@@ -6,7 +6,7 @@ $(document).ready(function() {
         var file = files[0];
 
         if (file) {
-            // ShowImage(file);
+            ShowImage(file);
             ResizeImagebyFile(file);
         }
     });
@@ -15,7 +15,10 @@ $(document).ready(function() {
 function ShowImage(file){
     var reader = new FileReader();
     reader.onload = function(e) {
-        console.log(e);
+        console.log(e.loaded/1000+" kB");
+                if(e.loaded == e.total){
+                    console.log("Tidak Rusak");
+                }
 
         document.getElementById('preview').src = e.target.result;
         // ResizeImage('imageFile', 'output');
@@ -25,14 +28,10 @@ function ShowImage(file){
 
 function ResizeImagebyFile(file) {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
-        var filesToUploads = document.getElementById('imageFile').files;
-        var file = filesToUploads[0];
         if (file) {
-
             var reader = new FileReader();
             // Set the image once loaded into file reader
             reader.onload = function(e) {
-
                 var img = document.createElement("img");
                 img.src = e.target.result;
 
@@ -62,7 +61,6 @@ function ResizeImagebyFile(file) {
                 ctx.drawImage(img, 0, 0, width, height);
 
                 dataurl = canvas.toDataURL(file.type);
-                console.log(dataurl);
                 document.getElementById('output').src = dataurl;
             }
             reader.readAsDataURL(file);
