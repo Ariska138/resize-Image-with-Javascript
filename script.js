@@ -6,13 +6,17 @@ $(document).ready(function() {
         var file = files[0];
 
         if (file) {
-            ShowImage(file);
-            ResizeImagebyFile(file);
+            ShowImage(file, function(url){
+                document.getElementById('preview').src = url;
+            });
+            ResizeImagebyFile(file, function(url){
+                document.getElementById('output').src = url;
+            });
         }
     });
 });
 
-function ShowImage(file){
+function ShowImage(file, callback){
     var reader = new FileReader();
     reader.onload = function(e) {
         console.log(e.loaded/1000+" kB");
@@ -20,13 +24,13 @@ function ShowImage(file){
                     console.log("Tidak Rusak");
                 }
 
-        document.getElementById('preview').src = e.target.result;
+        callback(e.target.result);
         // ResizeImage('imageFile', 'output');
     };
     reader.readAsDataURL(file);
 }
 
-function ResizeImagebyFile(file) {
+function ResizeImagebyFile(file, callback) {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
         if (file) {
             var reader = new FileReader();
@@ -61,7 +65,7 @@ function ResizeImagebyFile(file) {
                 ctx.drawImage(img, 0, 0, width, height);
 
                 dataurl = canvas.toDataURL(file.type);
-                document.getElementById('output').src = dataurl;
+                callback(dataurl);
             }
             reader.readAsDataURL(file);
 
